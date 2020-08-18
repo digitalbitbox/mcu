@@ -3525,6 +3525,13 @@ static void tests_memory_setup(void)
     api_format_send_cmd(cmd_str(CMD_led), "abort", key_00);
     ASSERT_REPORT_HAS(flag_msg(DBB_ERR_IO_JSON_PARSE));
 
+    // Check that the error code is a number
+    yajl_val root = yajl_tree_parse(api_read_decrypted_report(), NULL, 0);
+    const char* path[] = {"error", "code", NULL};
+    yajl_val error_code = yajl_tree_get(root, path, yajl_t_number);
+    u_assert(error_code != NULL);
+    yajl_tree_free(root);
+
     api_format_send_cmd(cmd_str(CMD_led), "abort", key_FE);
     ASSERT_REPORT_HAS(flag_msg(DBB_ERR_IO_JSON_PARSE));
 
